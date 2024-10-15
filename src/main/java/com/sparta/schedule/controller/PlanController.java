@@ -4,10 +4,9 @@ import com.sparta.schedule.dto.PlanRequestDto;
 import com.sparta.schedule.dto.PlanResponseDto;
 import com.sparta.schedule.service.PlanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,8 +24,11 @@ public class PlanController {
 
     @GetMapping("/get-all")
     @ResponseBody
-    public List<PlanResponseDto> getAll () {
-        return planService.getAll();
+    public Page<PlanResponseDto> getAll (@RequestParam(value = "page", defaultValue = "0") int page,
+                                         @RequestParam(value = "size", defaultValue = "10") int size,
+                                         @RequestParam(value = "sortBy",defaultValue = "modifiedAt") String sortBy,
+                                         @RequestParam(value = "isAsc", defaultValue = "false") boolean isAsc) {
+        return planService.getAll(page, size, sortBy, isAsc);
     }
 
     @PatchMapping("/update/{id}")

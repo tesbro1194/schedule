@@ -13,11 +13,13 @@ public class PlanResponseDto {
     private String title;
     private String contents;
     private LocalDateTime modifiedAt;
+    private int commentsCount;
 
-    public PlanResponseDto(Plan plan) {
+    public PlanResponseDto(Plan plan, int commentsCount) {
         this.username = plan.getUsername();
         this.title = plan.getTitle();
         this.contents = plan.getContents();
         this.modifiedAt = plan.getModifiedAt();
+        this.commentsCount = commentsCount;
     }
 }

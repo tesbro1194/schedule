@@ -5,6 +5,10 @@ import com.sparta.schedule.dto.PlanResponseDto;
 import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +25,15 @@ public class PlanService {
         planRepository.save(new Plan(requestDto));
     }
 
-    public List<PlanResponseDto> getAll() {
-        List<Plan> planList = planRepository.findAll();
+    public Page<PlanResponseDto> getAll(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<PlanResponseDto> responseDtoList = new ArrayList<>();
+        Page<Plan> planList;
+        planList = planRepository.findAll(pageable);
 
-        for (Plan plan : planList) {
-            responseDtoList.add(new PlanResponseDto(plan));
-        }
-
-        return responseDtoList;
+        return planList.map(plan -> new PlanResponseDto(plan, plan.getCommentList().size()));
     }
 
     @Transactional
