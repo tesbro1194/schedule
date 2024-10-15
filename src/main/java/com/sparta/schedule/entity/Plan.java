@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "plan")
 @Getter
@@ -22,6 +25,9 @@ public class Plan extends TimeStamp {
 
     @Column
     private String contents;
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
 
     public Plan(PlanRequestDto requestDto) {
         this.username = requestDto.getUsername();

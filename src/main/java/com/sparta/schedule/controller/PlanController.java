@@ -17,6 +17,7 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping("/create")
+    @ResponseBody
     public String createPlan (@RequestBody PlanRequestDto requestDto) {
         planService.createPlan(requestDto);
         return "redirect:/plan/get-all";

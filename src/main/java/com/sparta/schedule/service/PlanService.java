@@ -35,18 +35,17 @@ public class PlanService {
 
     @Transactional
     public void update(Long id, PlanRequestDto requestDto) {
-        Plan plan = findPlan(id);
+        Plan plan = findPlanById(id);
         plan.update(requestDto);
     }
 
     public void delete(Long id) {
-        Plan plan = findPlan(id);
+        Plan plan = findPlanById(id);
         planRepository.deleteById(plan.getId());
     }
-
-    private Plan findPlan(Long id) {
+    private Plan findPlanById(Long id) {
         return planRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 메모는 존재하지 않습니다.")
+                new IllegalArgumentException("선택한 일정는 존재하지 않습니다.")
         );
     }
 }
