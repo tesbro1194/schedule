@@ -1,9 +1,11 @@
 package com.sparta.schedule.controller;
 
 import com.sparta.schedule.dto.SharerRequestDto;
+import com.sparta.schedule.dto.SignupRequestDto;
 import com.sparta.schedule.dto.UserRequestDto;
 import com.sparta.schedule.dto.UserResponseDto;
 import com.sparta.schedule.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +18,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/create")
-    public String createUser (@RequestBody UserRequestDto requestDto) {
-        userService.createUser(requestDto);
-        return "redirect:/plan/get-all";
+    @PostMapping("/signup")
+    public String signup (@RequestBody SignupRequestDto requestDto, HttpServletResponse res) {
+        return userService.signup(requestDto, res);
     }
 
     @GetMapping("/get-all")

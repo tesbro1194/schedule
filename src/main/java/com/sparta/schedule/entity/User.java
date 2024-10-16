@@ -18,21 +18,25 @@ public class User extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Sharer> sharerList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Plan> plan;
 
-    public User(UserRequestDto requestDto) {
-        this.username = requestDto.getUsername();
-        this.email = requestDto.getEmail();
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public String update(UserRequestDto requestDto) {

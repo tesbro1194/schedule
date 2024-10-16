@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-
-    @Size(min =2, max = 10)
+public class SignupRequestDto {
+    @Size(min = 2, max = 10)
     private String username;
+
+    @Size(min = 4, max = 16)
+    private String password;
 
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}")
     private String email;
