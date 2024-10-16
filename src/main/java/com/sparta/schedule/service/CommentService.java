@@ -20,8 +20,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     public void createComment(Long planId, CommentRequestDto requestDto) {
         Plan plan = findPlanById(planId);
-        requestDto.setPlan(plan);
-        commentRepository.save(new Comment(requestDto));
+        Comment comment = new Comment(requestDto, plan);
+        commentRepository.save(comment);
     }
 
     public List<CommentResponseDto> getAll(Long planId) {
@@ -39,9 +39,9 @@ public class CommentService {
     @Transactional
     public void update(Long commentId, CommentRequestDto requestDto) {
         Comment comment = findCommentById(commentId);
-        comment.update(requestDto);
+        Plan plan = findPlanById(requestDto.getPlanId());
+        comment.update(requestDto, plan);
     }
-
 
     public void delete(Long id) {
         Comment comment = findCommentById(id);

@@ -26,20 +26,22 @@ public class Plan extends TimeStamp {
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "plan")
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private List<Sharer> sharerList = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;
 
-    public Plan(PlanRequestDto requestDto) {
+    public Plan(PlanRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.user = user;
     }
 
-    public void update(PlanRequestDto requestDto) {
+    public void update(PlanRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.user = user;
     }
 }

@@ -3,8 +3,10 @@ package com.sparta.schedule.service;
 import com.sparta.schedule.dto.SharerRequestDto;
 import com.sparta.schedule.dto.UserRequestDto;
 import com.sparta.schedule.dto.UserResponseDto;
+import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.entity.Sharer;
 import com.sparta.schedule.entity.User;
+import com.sparta.schedule.repository.PlanRepository;
 import com.sparta.schedule.repository.SharerRepository;
 import com.sparta.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final PlanRepository planRepository;
     private final UserRepository userRepository;
     private final SharerRepository sharerRepository;
 
@@ -45,10 +48,14 @@ public class UserService {
     }
 
     public void registerSharer(SharerRequestDto requestDto) {
+        Plan plan = planRepository.findById(requestDto.getPlanId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Plan이 없습니다."));
+
         List<User> userList = requestDto.getUserList();
         for (User user : userList) {
             Sharer sharer = new Sharer();
             sharer.setUser(user);
+            sharer.setPlan(plan);
             sharerRepository.save(sharer);
         }
     }

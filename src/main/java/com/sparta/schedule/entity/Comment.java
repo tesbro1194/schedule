@@ -26,14 +26,15 @@ public class Comment extends TimeStamp {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    public Comment(CommentRequestDto requestDto) {
+    public Comment(CommentRequestDto requestDto, Plan plan) {
         this.username = requestDto.getUsername();
         this.contents = requestDto.getContents();
-        this.plan = requestDto.getPlan();
+        this.plan = plan;
     }
 
-    public void update(CommentRequestDto requestDto) {
+    public void update(CommentRequestDto requestDto, Plan plan) {
         this.username = requestDto.getUsername();
         this.contents = requestDto.getContents();
+        this.plan = plan;
     }
 }

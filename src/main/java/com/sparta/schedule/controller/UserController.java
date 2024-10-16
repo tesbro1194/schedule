@@ -37,7 +37,7 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
-    @PostMapping("/registerSharer")
+    @PutMapping("/registerSharer")
     public String registerSharer (@RequestBody SharerRequestDto requestDto) {
         userService.registerSharer(requestDto);
         return "redirect:/plan/get-all";
