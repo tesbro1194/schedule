@@ -1,14 +1,12 @@
 package com.sparta.schedule.controller;
 
-import com.sparta.schedule.dto.SharerRequestDto;
-import com.sparta.schedule.dto.SignupRequestDto;
-import com.sparta.schedule.dto.UserRequestDto;
-import com.sparta.schedule.dto.UserResponseDto;
+import com.sparta.schedule.dto.*;
 import com.sparta.schedule.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,8 +17,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup (@RequestBody SignupRequestDto requestDto, HttpServletResponse res) {
-        return userService.signup(requestDto, res);
+    public String signup (@RequestBody SignupRequestDto requestDto, HttpServletResponse response) {
+        return userService.signup(requestDto, response);
+    }
+
+    @PostMapping("/login")
+    public String login (@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws IOException {
+        return userService.login(requestDto, response);
     }
 
     @GetMapping("/get-all")

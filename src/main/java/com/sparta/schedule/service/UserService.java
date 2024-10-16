@@ -1,10 +1,7 @@
 package com.sparta.schedule.service;
 
 import com.sparta.schedule.config.PasswordEncoder;
-import com.sparta.schedule.dto.SharerRequestDto;
-import com.sparta.schedule.dto.SignupRequestDto;
-import com.sparta.schedule.dto.UserRequestDto;
-import com.sparta.schedule.dto.UserResponseDto;
+import com.sparta.schedule.dto.*;
 import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.entity.Sharer;
 import com.sparta.schedule.entity.User;
@@ -16,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     public final JwtUtil jwtUtil;
 
-    public String signup(SignupRequestDto requestDto, HttpServletResponse res) {
+    public String signup(SignupRequestDto requestDto, HttpServletResponse response) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -48,9 +46,40 @@ public class UserService {
         userRepository.save(user);
 
         String token = jwtUtil.createToken(username);
-        jwtUtil.addJwtToCookie(token, res);
+        response.setHeader("Authentication-Info", token);
 
         return token;
+    }
+
+    public String login(LoginRequestDto requestDto, HttpServletResponse response) throws IOException {
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        if (email == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return "이메일을 입력하세요";
+        }
+        if (password == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return  "비밀번호를 입력하세요";
+        }
+
+        try {
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다"));
+
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return "이메일 또는 비밀번호가 잘못 되었습니다";
+            }
+
+            String token = jwtUtil.createToken(user.getUsername());
+            response.setHeader("Authentication-Info", token);
+
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+        }
+
+        return "redirect:/plan/get-all";
     }
 
     public List<UserResponseDto> findAllUsers() {
@@ -69,14 +98,11 @@ public class UserService {
     }
 
     private User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("선택한 유저는 존재하지 않습니다")
-        );
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("선택한 유저는 존재하지 않습니다"));
     }
 
     public void registerSharer(SharerRequestDto requestDto) {
-        Plan plan = planRepository.findById(requestDto.getPlanId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 Plan이 없습니다."));
+        Plan plan = planRepository.findById(requestDto.getPlanId()).orElseThrow(() -> new IllegalArgumentException("해당 Plan이 없습니다."));
 
         List<User> userList = requestDto.getUserList();
         for (User user : userList) {
