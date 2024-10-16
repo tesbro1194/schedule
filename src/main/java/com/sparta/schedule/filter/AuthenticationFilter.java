@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,6 +18,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Order(0)
 public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;

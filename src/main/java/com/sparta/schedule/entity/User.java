@@ -27,6 +27,9 @@ public class User extends TimeStamp {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String role;
+
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Sharer> sharerList = new ArrayList<>();
 

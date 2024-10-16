@@ -22,8 +22,9 @@ import java.util.Date;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_TIME = 300 * 60 * 1000L;
+    private final long TOKEN_TIME = 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -78,20 +79,13 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
+
+        String bearerToken = req.getHeader(AUTHORIZATION_HEADER);
+        if (bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken;
         }
+
         return null;
     }
 }
