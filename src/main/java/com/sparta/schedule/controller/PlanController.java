@@ -31,15 +31,15 @@ public class PlanController {
         return planService.getAll(page, size, sortBy, isAsc);
     }
 
-    @PatchMapping("/update/{id}")
-    public String updatePlan (@PathVariable Long id, @RequestBody PlanRequestDto requestDto) {
-        planService.update(id, requestDto);
+    @PatchMapping("/update/{planId}")
+    public String updatePlan (@PathVariable Long planId, @RequestBody PlanRequestDto requestDto) {
+        planService.update(planId, requestDto);
         return "redirect:/plan/get-all";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        planService.delete(id);
+    @DeleteMapping("/delete/{planId}")
+    public String delete(@PathVariable Long planId) {
+        planService.delete(planId);
         return "redirect:/plan/get-all";
     }
 }

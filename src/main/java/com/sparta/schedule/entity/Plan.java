@@ -18,9 +18,6 @@ public class Plan extends TimeStamp {
     private Long id;
 
     @Column
-    private String username;
-
-    @Column
     private String title;
 
     @Column
@@ -29,14 +26,19 @@ public class Plan extends TimeStamp {
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "plan")
+    private List<Sharer> sharerList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user")
+    private User user;
+
     public Plan(PlanRequestDto requestDto) {
-        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     public void update(PlanRequestDto requestDto) {
-        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
