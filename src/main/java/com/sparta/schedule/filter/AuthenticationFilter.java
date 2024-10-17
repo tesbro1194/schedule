@@ -40,21 +40,19 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(tokenValue)) {
                 String token = jwtUtil.substringToken(tokenValue);
+                Claims info = jwtUtil.getUserInfoFromToken(token);
+
+                User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                        new NullPointerException("사용자가 존재하지 않습니다"));
 
                 if (!jwtUtil.validateToken(token)) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "다시 로그인 해주세요");
                 }
 
-                Claims info = jwtUtil.getUserInfoFromToken(token);
-
-                User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                        new NullPointerException("Not Found User")
-                );
-
                 request.setAttribute("user", user);
                 filterChain.doFilter(request, response);
             } else {
-                throw new IllegalArgumentException("Not Found Token");
+                throw new IllegalArgumentException("토큰이 존재하지 않습니다");
             }
         }
     }

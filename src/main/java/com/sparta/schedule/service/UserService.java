@@ -5,6 +5,7 @@ import com.sparta.schedule.dto.*;
 import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.entity.Sharer;
 import com.sparta.schedule.entity.User;
+import com.sparta.schedule.entity.UserRoleEnum;
 import com.sparta.schedule.jwt.JwtUtil;
 import com.sparta.schedule.repository.PlanRepository;
 import com.sparta.schedule.repository.SharerRepository;
@@ -41,8 +42,14 @@ public class UserService {
         if (checkEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
+        UserRoleEnum role;
+        if (requestDto.isRole()) {
+            role = ROLE_USER;
+        } else {
+            role = ROLE_ADMIN;
+        }
 
-        User user = new User(username, password, email);
+        User user = new User(username, password, email, role);
         userRepository.save(user);
 
         String token = jwtUtil.createToken(username);
@@ -72,11 +79,12 @@ public class UserService {
                 return "이메일 또는 비밀번호가 잘못 되었습니다";
             }
 
-            String token = jwtUtil.createToken(user.getUsername());
-            response.setHeader("Authentication-Info", token);
+            UserRoleEnum role = user.getRole();
+            String token = jwtUtil.createToken(user.getUsername(), role);
+            response.setHeader(AUTHORIZATION_HEADER, token);
 
         } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
 
         return "redirect:/plan/get-all";

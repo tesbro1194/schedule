@@ -28,7 +28,8 @@ public class User extends TimeStamp {
     private String email;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Sharer> sharerList = new ArrayList<>();
@@ -36,10 +37,11 @@ public class User extends TimeStamp {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Plan> plan;
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
     public String update(UserRequestDto requestDto) {

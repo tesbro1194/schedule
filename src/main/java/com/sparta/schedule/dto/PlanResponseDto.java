@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class PlanResponseDto {
-    private User user;
+    private String username;
     private String title;
     private String contents;
     private LocalDateTime modifiedAt;
     private int commentsCount;
 
     public PlanResponseDto(Plan plan, int commentsCount) {
-        this.user = plan.getUser();
+        this.username = plan.getUser().getUsername();
         this.title = plan.getTitle();
         this.contents = plan.getContents();
         this.modifiedAt = plan.getModifiedAt();

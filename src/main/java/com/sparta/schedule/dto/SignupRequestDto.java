@@ -18,4 +18,6 @@ public class SignupRequestDto {
 
     @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}")
     private String email;
+
+    private boolean role = false;
 }

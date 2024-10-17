@@ -22,6 +22,10 @@ public class Plan extends TimeStamp {
 
     @Column
     private String contents;
+    /*
+    @Column
+    private String weather;
+*/
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
