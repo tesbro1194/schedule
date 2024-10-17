@@ -1,6 +1,7 @@
 package com.sparta.schedule.controller;
 
 import com.sparta.schedule.dto.*;
+import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,7 @@ public class UserController {
     }
 
     @PutMapping("/registerSharer")
-    public String registerSharer (@RequestBody SharerRequestDto requestDto) {
-        userService.registerSharer(requestDto);
-        return "redirect:/plan/get-all";
+    public Plan registerSharer (@RequestBody SharerRequestDto requestDto) {
+        return userService.registerSharer(requestDto);
     }
 }

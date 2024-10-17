@@ -1,7 +1,9 @@
 package com.sparta.schedule.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.schedule.dto.PlanRequestDto;
 import com.sparta.schedule.dto.PlanResponseDto;
+import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,9 +19,8 @@ public class PlanController {
 
     @PostMapping("/create")
     @ResponseBody
-    public String createPlan (@RequestBody PlanRequestDto requestDto) {
-        planService.createPlan(requestDto);
-        return "redirect:/plan/get-all";
+    public PlanResponseDto createPlan (@RequestBody PlanRequestDto requestDto) throws JsonProcessingException {
+        return planService.createPlan(requestDto);
     }
 
     @GetMapping("/get-all")
@@ -32,9 +33,8 @@ public class PlanController {
     }
 
     @PatchMapping("/update/{planId}")
-    public String updatePlan (@PathVariable Long planId, @RequestBody PlanRequestDto requestDto) {
-        planService.update(planId, requestDto);
-        return "redirect:/plan/get-all";
+    public PlanResponseDto updatePlan (@PathVariable Long planId, @RequestBody PlanRequestDto requestDto) {
+        return planService.update(planId, requestDto);
     }
 
     @DeleteMapping("/delete/{planId}")

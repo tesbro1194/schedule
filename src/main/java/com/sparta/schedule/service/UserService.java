@@ -109,7 +109,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("선택한 유저는 존재하지 않습니다"));
     }
 
-    public void registerSharer(SharerRequestDto requestDto) {
+    public Plan registerSharer(SharerRequestDto requestDto) {
         Plan plan = planRepository.findById(requestDto.getPlanId()).orElseThrow(() -> new IllegalArgumentException("해당 Plan이 없습니다."));
 
         List<User> userList = requestDto.getUserList();
@@ -119,5 +119,6 @@ public class UserService {
             sharer.setPlan(plan);
             sharerRepository.save(sharer);
         }
+        return plan;
     }
 }

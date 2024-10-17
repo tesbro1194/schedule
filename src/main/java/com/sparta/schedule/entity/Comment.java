@@ -27,13 +27,13 @@ public class Comment extends TimeStamp {
     private Plan plan;
 
     public Comment(CommentRequestDto requestDto, Plan plan) {
-        this.username = requestDto.getUsername();
+        this.username = plan.getUser().getUsername();
         this.contents = requestDto.getContents();
         this.plan = plan;
     }
 
     public void update(CommentRequestDto requestDto, Plan plan) {
-        this.username = requestDto.getUsername();
+        this.username = plan.getUser().getUsername();
         this.contents = requestDto.getContents();
         this.plan = plan;
     }

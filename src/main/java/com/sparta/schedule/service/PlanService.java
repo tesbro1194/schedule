@@ -1,7 +1,11 @@
 package com.sparta.schedule.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.schedule.dto.PlanRequestDto;
 import com.sparta.schedule.dto.PlanResponseDto;
+import com.sparta.schedule.dto.WeatherDto;
 import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.entity.User;
 import com.sparta.schedule.repository.PlanRepository;
@@ -11,9 +15,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PlanService {
@@ -28,8 +40,7 @@ public class PlanService {
         this.restTemplate = builder.build();
     }
 
-    public void createPlan(PlanRequestDto requestDto) {
-/*
+    public PlanResponseDto createPlan(PlanRequestDto requestDto) throws JsonProcessingException {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://f-api.github.io")
                 .path("/f-api/weather.json")
@@ -38,10 +49,23 @@ public class PlanService {
                 .toUri();
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
-*/
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<WeatherDto> weatherList;
+
+        weatherList = objectMapper.readValue(responseEntity.getBody(), new TypeReference<List<WeatherDto>>() {});
+
+        LocalDate today = LocalDate.now();
+        String todayString = today.format(DateTimeFormatter.ofPattern("MM-dd"));
+        String todayWeather = weatherList.stream()
+                .filter(w -> w.getDate().equals(todayString))
+                .map(WeatherDto::getWeather)
+                .findFirst()
+                .orElse("날씨 정보 없음");
 
         User user = findUserById(requestDto.getUserId());
-        planRepository.save(new Plan(requestDto, user));
+        Plan plan = planRepository.save(new Plan(requestDto, user, todayWeather));
+        return new PlanResponseDto(plan, plan.getCommentList().size());
     }
 
     public Page<PlanResponseDto> getAll(int page, int size, String sortBy, boolean isAsc) {
@@ -56,10 +80,11 @@ public class PlanService {
     }
 
     @Transactional
-    public void update(Long id, PlanRequestDto requestDto) {
+    public PlanResponseDto update(Long id, PlanRequestDto requestDto) {
         Plan plan = findPlanById(id);
         User user = findUserById(requestDto.getUserId());
         plan.update(requestDto, user);
+        return new PlanResponseDto(plan, plan.getCommentList().size());
     }
 
     public void delete(Long id) {

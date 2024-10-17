@@ -22,10 +22,9 @@ public class Plan extends TimeStamp {
 
     @Column
     private String contents;
-    /*
+
     @Column
     private String weather;
-*/
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
@@ -37,10 +36,11 @@ public class Plan extends TimeStamp {
     @JoinColumn(name = "user")
     private User user;
 
-    public Plan(PlanRequestDto requestDto, User user) {
+    public Plan (PlanRequestDto requestDto, User user, String weather) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.user = user;
+        this.weather = weather;
     }
 
     public void update(PlanRequestDto requestDto, User user) {
