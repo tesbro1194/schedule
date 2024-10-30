@@ -22,10 +22,6 @@ public class UserController {
         return userService.signup(requestDto, response);
     }
 
-    @PostMapping("/login")
-    public String login (@RequestBody LoginRequestDto requestDto, HttpServletResponse response) throws IOException {
-        return userService.login(requestDto, response);
-    }
 
     @GetMapping("/get-all")
     public List<UserResponseDto> findAllUsers() {

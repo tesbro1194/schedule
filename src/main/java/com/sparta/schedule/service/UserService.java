@@ -61,38 +61,6 @@ public class UserService {
         return token;
     }
 
-    public String login(LoginRequestDto requestDto, HttpServletResponse response) throws IOException {
-        String email = requestDto.getEmail();
-        String password = requestDto.getPassword();
-
-        if (email == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return "이메일을 입력하세요";
-        }
-        if (password == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return  "비밀번호를 입력하세요";
-        }
-
-        try {
-            User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다"));
-
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                return "이메일 또는 비밀번호가 잘못 되었습니다";
-            }
-
-            UserRoleEnum role = user.getRole();
-            String token = jwtUtil.createToken(user.getUsername(), role);
-            response.setHeader("AUTHORIZATION_HEADER", token);
-
-        } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-        }
-
-        return "redirect:/plan/get-all";
-    }
-
     public List<UserResponseDto> findAllUsers() {
         return userRepository.findAll().stream().map(user -> new UserResponseDto(user)).toList();
     }
