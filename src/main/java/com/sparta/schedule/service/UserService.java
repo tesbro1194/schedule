@@ -44,15 +44,15 @@ public class UserService {
         }
         UserRoleEnum role;
         if (requestDto.isRole()) {
-            role = ROLE_USER;
+            role = UserRoleEnum.ROLE_USER;
         } else {
-            role = ROLE_ADMIN;
+            role = UserRoleEnum.ROLE_ADMIN;
         }
 
         User user = new User(username, password, email, role);
         userRepository.save(user);
 
-        String token = jwtUtil.createToken(username);
+        String token = jwtUtil.createToken(username, role);
         response.setHeader("Authentication-Info", token);
 
         return token;
@@ -81,7 +81,7 @@ public class UserService {
 
             UserRoleEnum role = user.getRole();
             String token = jwtUtil.createToken(user.getUsername(), role);
-            response.setHeader(AUTHORIZATION_HEADER, token);
+            response.setHeader("AUTHORIZATION_HEADER", token);
 
         } catch (IllegalArgumentException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
@@ -105,10 +105,6 @@ public class UserService {
         return "유저 정보가 삭제되었습니다";
     }
 
-    private User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("선택한 유저는 존재하지 않습니다"));
-    }
-
     public Plan registerSharer(SharerRequestDto requestDto) {
         Plan plan = planRepository.findById(requestDto.getPlanId()).orElseThrow(() -> new IllegalArgumentException("해당 Plan이 없습니다."));
 
@@ -120,5 +116,9 @@ public class UserService {
             sharerRepository.save(sharer);
         }
         return plan;
+    }
+
+    private User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("선택한 유저는 존재하지 않습니다"));
     }
 }
