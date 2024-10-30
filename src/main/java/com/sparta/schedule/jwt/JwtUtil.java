@@ -4,12 +4,17 @@ import com.sparta.schedule.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -83,5 +88,18 @@ public class JwtUtil {
             return bearerToken;
         }
         return null;
+    }
+
+    public void addJwtToCookie(String token, HttpServletResponse res) {
+        try {
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+
+            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token);
+            cookie.setPath("/");
+
+            res.addCookie(cookie);
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
     }
 }
