@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sparta.schedule.entity.UserRoleEnum.ADMIN;
+import static com.sparta.schedule.entity.UserRoleEnum.USER;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -44,9 +47,9 @@ public class UserService {
         }
         UserRoleEnum role;
         if (requestDto.isRole()) {
-            role = UserRoleEnum.ROLE_USER;
+            role = USER;
         } else {
-            role = UserRoleEnum.ROLE_ADMIN;
+            role = ADMIN;
         }
 
         User user = new User(username, password, email, role);

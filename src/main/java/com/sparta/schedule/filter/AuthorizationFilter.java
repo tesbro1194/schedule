@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
@@ -29,7 +29,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
             UserRoleEnum role = user.getRole();
 
-            if (role != UserRoleEnum.ROLE_ADMIN) {
+            if (role != UserRoleEnum.ADMIN) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자만 일정 수정 및 삭제가 가능합니다.");
                 return ;
             }
