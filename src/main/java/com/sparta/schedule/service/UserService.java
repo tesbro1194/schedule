@@ -1,20 +1,20 @@
 package com.sparta.schedule.service;
 
 import com.sparta.schedule.config.PasswordEncoder;
-import com.sparta.schedule.dto.*;
+import com.sparta.schedule.dto.SharerRequestDto;
+import com.sparta.schedule.dto.SignupRequestDto;
+import com.sparta.schedule.dto.UserRequestDto;
+import com.sparta.schedule.dto.UserResponseDto;
 import com.sparta.schedule.entity.Plan;
 import com.sparta.schedule.entity.Sharer;
 import com.sparta.schedule.entity.User;
 import com.sparta.schedule.entity.UserRoleEnum;
-import com.sparta.schedule.jwt.JwtUtil;
 import com.sparta.schedule.repository.PlanRepository;
 import com.sparta.schedule.repository.SharerRepository;
 import com.sparta.schedule.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,9 +29,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final SharerRepository sharerRepository;
     private final PasswordEncoder passwordEncoder;
-    public final JwtUtil jwtUtil;
 
-    public String signup(SignupRequestDto requestDto, HttpServletResponse response) {
+    public String signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -55,10 +54,7 @@ public class UserService {
         User user = new User(username, password, email, role);
         userRepository.save(user);
 
-        String token = jwtUtil.createToken(username, role);
-        response.setHeader("Authentication-Info", token);
-
-        return token;
+        return "회원 가입 완료";
     }
 
     public List<UserResponseDto> findAllUsers() {

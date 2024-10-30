@@ -18,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup (@RequestBody SignupRequestDto requestDto, HttpServletResponse response) {
-        return userService.signup(requestDto, response);
+    public String signup (@RequestBody SignupRequestDto requestDto) {
+        return userService.signup(requestDto);
     }
 
 
